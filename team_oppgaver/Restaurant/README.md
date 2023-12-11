@@ -4,7 +4,7 @@ Skriv ferdig.
 - ha metodene i de klassene de hører hjemme. 
 
 ```java
-﻿// Info: En bordreservasjon er på 2 timer
+// Info: En bordreservasjon er på 2 timer
 
 var restaurant = new Restaurant("Terjes Trivelige Tapas", 16, 20);
 
