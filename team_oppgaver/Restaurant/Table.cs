@@ -2,17 +2,17 @@ namespace Project;
 
 class Table
 {
-    private readonly string _tableID;
-    private readonly int _seats;
+    public string Id { get; }
+    public int Seats { get; }
 
-    public Table(string tableID, int seats)
+    public Table(string id, int seats)
     {
-        _tableID = tableID;
-        _seats = seats;
+        Id = id;
+        Seats = seats;
     }
 
     public string GetDescription()
     {
-        return $"Bord {_tableID} har plass til {_seats} personer.";
+        return $"Bord {Id} har plass til {Seats} personer";
     }
 }
