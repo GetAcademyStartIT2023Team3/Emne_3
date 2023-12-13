@@ -7,6 +7,7 @@ class Reservations
     private readonly int _seats;
     private readonly DateTime _dateTime;
     public string TableId { get; }
+
     public Reservations(string name, string phone, int seats, DateTime dateTime, string tableId)
     {
         _name = name;
