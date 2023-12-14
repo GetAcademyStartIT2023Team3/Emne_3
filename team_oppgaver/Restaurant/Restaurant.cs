@@ -47,9 +47,9 @@ internal class Restaurant {
     {
         var reservations = ReservationHandle.GetAllReservationsForDate(date, _reservations);
 
-        string printRows = "---Reservasjoner---\n";
+        string printRows = $"Reservasjoner for {date.ToString("dd.MMMM yyyy")}\n\n";
 
-        printRows += "".PadRight(6) + '|';
+        printRows += "Tid.".PadRight(6) + '|';
         foreach (var table in _tables)
         {
             printRows += $"    Bord {table.Id} ({table.Seats} personer)".PadRight(30) + '|';
