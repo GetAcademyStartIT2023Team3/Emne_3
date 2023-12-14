@@ -55,9 +55,9 @@ internal class Restaurant {
             printRows += $"    Bord {table.Id} ({table.Seats} personer)".PadRight(30) + '|';
         }
 
-        var currentTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _openingHour, 0, 0);
-        var eightOClock = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _closingHour, 0, 0);
-        while (currentTime < eightOClock)
+        var currentTime = new DateTime(date.Year, date.Month, date.Day, _openingHour, 0, 0);
+        var closingTime = new DateTime(date.Year, date.Month, date.Day, _closingHour, 0, 0);
+        while (currentTime < closingTime)
         {
             string row = "\n" + currentTime.ToString("HH:mm").PadRight(6) + "|";
 
