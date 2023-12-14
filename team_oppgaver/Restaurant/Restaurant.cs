@@ -22,20 +22,56 @@ internal class Restaurant {
         return table;
     }
 
-    public Reservations CreateReservation(string name, string phone, int seats, DateTime dateTime)
+    public ReservationResponse CreateReservation(string name, string phone, int seats, DateTime dateTime)
     {
-        // TODO: check if reservation is possible before returning Reservations
-
         // LINQ syntax to find unoccupied tables
-        var possible_tables = _tables
-            .Where(t => t.Seats >= seats)
-			.Where(t => ! _reservations.Exists(r => r.TableId == t.Id));
+        Table? smallest_table = _tables
+            .Where(t => t.Seats >= seats) // get all tables with >= seats
+            .Where(t => !_reservations.Exists(r => r.TableId == t.Id && r.TimeOverlaps(dateTime))) // get all tables which do not have a reservation at specified time
+            .OrderBy(t => t.Seats)
+            .FirstOrDefault();
+            
+        if ( smallest_table == null) { /*handle null reference*/
+            var description = $"Vi beklager! Det er ikke ledig bord til {seats} personer {dateTime}";
+            return new ReservationResponse(description, null);
+		};
 
-        if (possible_tables == null) { /*handle null reference*/ };
-
-        string tableId = "please give me a valid table id :)";
-        var reservation = new Reservations(name, phone, seats, dateTime, tableId);
+        var reservation = new Reservations(name, phone, seats, dateTime, smallest_table.Id);
         _reservations.Add(reservation);
-        return reservation;
+
+		return new ReservationResponse($"Reservert bord til {seats} personer {dateTime}", reservation);
     }
 }
+
+/*
+
+hva kreves for å kunne reservere
+1. antall seter -> finn bord med >= antall seter
+2. tid og dato -> 
+
+
+BORD:
+    A: 6 seter
+    B: 4 seter
+    C: 5 seter
+
+BESTILLING
+    1:
+        5 personer
+        17:00
+        Tldeles bord C
+    2:
+        5 personer
+        17:00
+        Tildeles bord A
+    3:
+        4 personer
+        17:00
+        Tildeles bord B
+    4:
+        4 personer
+        17:00
+        INGEN LEDIG
+
+
+*/

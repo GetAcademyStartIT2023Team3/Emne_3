@@ -15,4 +15,6 @@ class Table
     {
         return $"Bord {Id} har plass til {Seats} personer";
     }
+
+
 }
