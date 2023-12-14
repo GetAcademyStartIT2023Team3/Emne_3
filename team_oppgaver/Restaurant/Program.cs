@@ -17,6 +17,9 @@ Console.WriteLine(reservationResponse1.GetDescription());
 
 var reservationResponse2 = restaurant.CreateReservation("Hansen", "997 78 866", 5, dateTime2);
 Console.WriteLine(reservationResponse2.GetDescription());
+
+restaurant.GetAllReservationsForOneDay();
+
 // -- Vi beklager! Det er ikke ledig bord til 5 personer 24.12.2023 kl. 17:00
 
 

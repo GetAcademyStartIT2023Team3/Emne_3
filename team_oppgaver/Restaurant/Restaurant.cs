@@ -24,8 +24,9 @@ internal class Restaurant {
 
     public ReservationResponse CreateReservation(string name, string phone, int seats, DateTime dateTime)
     {
-        // LINQ syntax to find unoccupied tables
-        Table? smallest_table = _tables
+        if(dateTime.Hour < _openingHour || dateTime.Hour > _closingHour + 2) return new ReservationResponse("Utenfor åpningstider", null);
+		// LINQ syntax to find unoccupied tables
+		Table? smallest_table = _tables
             .Where(t => t.Seats >= seats) // get all tables with >= seats
             .Where(t => !_reservations.Exists(r => r.TableId == t.Id && r.TimeOverlaps(dateTime))) // get all tables which do not have a reservation at specified time
             .OrderBy(t => t.Seats)
@@ -41,6 +42,40 @@ internal class Restaurant {
 
 		return new ReservationResponse($"Reservert bord til {seats} personer {dateTime}", reservation);
     }
+
+    public string GetAllReservationsForOneDay() {
+        string template = """
+            //                                 |
+            // 16:00                           |
+            // 16:15                           |
+            // 16:30                           |
+            // 16:45                           |
+            // 17:00                           |
+            // 17:15                           |
+            // 17:30                           |
+            // 17:45                           |
+            // 18:00                           |
+            // 18:15                           |
+            // 18:30                           |
+            // 18:45                           |
+            // 19:00                           |
+            // 19:15                           |
+            // 19:30                           |
+            // 19:45                           |
+            """;
+        Console.WriteLine(template);
+        Console.CursorLeft = 10;
+        Console.CursorTop = 2;
+
+        Console.WriteLine("GetAllReservationsForOneDay()");
+
+        for(TimeSpan time = new TimeSpan(_openingHour,0,0); time < new TimeSpan(_closingHour); time += new TimeSpan(0,15,0))
+        {
+            Console.WriteLine($"Time: {time}");
+        }
+
+        return "";
+	}
 }
 
 /*
