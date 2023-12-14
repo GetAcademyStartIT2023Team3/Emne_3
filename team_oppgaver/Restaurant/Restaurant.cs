@@ -43,70 +43,62 @@ internal class Restaurant {
 		return new ReservationResponse($"Reservert bord til {seats} personer {dateTime}", reservation);
     }
 
-    public string GetAllReservationsForOneDay() {
-        string template = """
-            //                                 |
-            // 16:00                           |
-            // 16:15                           |
-            // 16:30                           |
-            // 16:45                           |
-            // 17:00                           |
-            // 17:15                           |
-            // 17:30                           |
-            // 17:45                           |
-            // 18:00                           |
-            // 18:15                           |
-            // 18:30                           |
-            // 18:45                           |
-            // 19:00                           |
-            // 19:15                           |
-            // 19:30                           |
-            // 19:45                           |
-            """;
-        Console.WriteLine(template);
-        Console.CursorLeft = 10;
-        Console.CursorTop = 2;
+    public string GetAllReservationsForDate(DateTime date)
+    {
+        var reservations = ReservationHandle.GetAllReservationsForDate(date, _reservations);
 
-        Console.WriteLine("GetAllReservationsForOneDay()");
+        string printRows = "---Reservasjoner---\n";
 
-        for(TimeSpan time = new TimeSpan(_openingHour,0,0); time < new TimeSpan(_closingHour); time += new TimeSpan(0,15,0))
+        printRows += "".PadRight(6) + '|';
+        foreach (var table in _tables)
         {
-            Console.WriteLine($"Time: {time}");
+            printRows += $"    Bord {table.Id} ({table.Seats} personer)".PadRight(30) + '|';
         }
 
-        return "";
+        var currentTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _openingHour, 0, 0);
+        var eightOClock = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, _closingHour, 0, 0);
+        while (currentTime < eightOClock)
+        {
+            string row = "\n" + currentTime.ToString("HH:mm").PadRight(6) + "|";
+
+            foreach (var table in _tables)
+            {
+                string col = String.Empty;
+                foreach (var reservation in reservations)
+                {
+                    if (table.Id != reservation.TableId) continue;
+
+                    string resTime = reservation.ReservedAt.ToString("HH:mm");
+
+                    if (currentTime.ToString("HH:mm") == resTime)
+                    {
+                        col += $"-----------{resTime}--------------";
+                    }
+                    else if (currentTime.AddHours(-0.25).ToString("HH:mm") == resTime)
+                    {
+                        col += $"  Navn. {reservation.Name}";
+                    }
+                    else if (currentTime.AddHours(-0.75).ToString("HH:mm") == resTime)
+                    {
+                        col += $"  Antall. {reservation.Seats} Personer";
+                    }
+                    else if (currentTime.AddHours(-1.25).ToString("HH:mm") == resTime)
+                    {
+                        col += $"  Tlf. {reservation.Phone}";
+                    }
+                    else if (currentTime.AddHours(-1.75).ToString("HH:mm") == resTime)
+                    {
+                        col += "------------------------------";
+                    }
+                }
+
+                row += col.PadRight(30) + '|';
+            }
+
+            printRows += row;
+            currentTime = currentTime.AddMinutes(15);
+        }
+
+        return printRows;
 	}
 }
-
-/*
-
-hva kreves for å kunne reservere
-1. antall seter -> finn bord med >= antall seter
-2. tid og dato -> 
-
-
-BORD:
-    A: 6 seter
-    B: 4 seter
-    C: 5 seter
-
-BESTILLING
-    1:
-        5 personer
-        17:00
-        Tldeles bord C
-    2:
-        5 personer
-        17:00
-        Tildeles bord A
-    3:
-        4 personer
-        17:00
-        Tildeles bord B
-    4:
-        4 personer
-        17:00
-        INGEN LEDIG
-
-
-*/
