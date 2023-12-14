@@ -5,7 +5,7 @@ internal class Restaurant {
     private readonly int _openingHour;
     private readonly int _closingHour;
     private List<Table> _tables = new();
-    private List<Reservations> _reservations = new();
+    private List<Reservation> _reservations = new();
 
     public Restaurant(string name, int openingTime, int closingTime) {
         _name = name;
@@ -36,7 +36,7 @@ internal class Restaurant {
             return new ReservationResponse(description, null);
 		};
 
-        var reservation = new Reservations(name, phone, seats, dateTime, smallest_table.Id);
+        var reservation = new Reservation(name, phone, seats, dateTime, smallest_table.Id);
         _reservations.Add(reservation);
 
 		return new ReservationResponse($"Reservert bord til {seats} personer {dateTime}", reservation);

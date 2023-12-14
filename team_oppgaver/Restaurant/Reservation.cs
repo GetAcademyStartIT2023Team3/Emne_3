@@ -1,6 +1,6 @@
 namespace Project;
 
-class Reservations
+class Reservation
 {
     private readonly string _name;
     private readonly string _phone;
@@ -9,7 +9,7 @@ class Reservations
 
     public string TableId { get; }
 
-    public Reservations(string name, string phone, int seats, DateTime reservedAt, string tableId)
+    public Reservation(string name, string phone, int seats, DateTime reservedAt, string tableId)
     {
         _name = name;
         _phone = phone;
