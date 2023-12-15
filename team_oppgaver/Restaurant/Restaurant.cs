@@ -63,36 +63,27 @@ internal class Restaurant {
 
             foreach (var table in _tables)
             {
-                string col = String.Empty;
+                string columns = String.Empty;
                 foreach (var reservation in reservations)
                 {
                     if (table.Id != reservation.TableId) continue;
 
-                    string resTime = reservation.ReservedAt.ToString("HH:mm");
+                    TimeSpan reservationOffset = currentTime - reservation.ReservedAt;
 
-                    if (currentTime.ToString("HH:mm") == resTime)
+                    string column = reservationOffset.TotalHours switch
                     {
-                        col += $"-----------{resTime}--------------";
-                    }
-                    else if (currentTime.AddHours(-0.25).ToString("HH:mm") == resTime)
-                    {
-                        col += $"  Navn. {reservation.Name}";
-                    }
-                    else if (currentTime.AddHours(-0.75).ToString("HH:mm") == resTime)
-                    {
-                        col += $"  Antall. {reservation.Seats} Personer";
-                    }
-                    else if (currentTime.AddHours(-1.25).ToString("HH:mm") == resTime)
-                    {
-                        col += $"  Tlf. {reservation.Phone}";
-                    }
-                    else if (currentTime.AddHours(-1.75).ToString("HH:mm") == resTime)
-                    {
-                        col += "------------------------------";
-                    }
+                        0.00 => $"-----------{reservation.ReservedAt:HH:mm}--------------",
+                        0.25 => $"  Navn. {reservation.Name}",
+                        0.75 => $"  Antall. {reservation.Seats} Personer",
+                        1.25 => $"  Tlf. {reservation.Phone}",
+                        1.75 => "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+                        _ => String.Empty,
+                    };
+
+                    columns += column;
                 }
 
-                row += col.PadRight(30) + '|';
+                row += columns.PadRight(30) + '|';
             }
 
             printRows += row;
