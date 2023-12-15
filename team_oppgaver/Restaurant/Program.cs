@@ -27,8 +27,16 @@ var reservationResponse3 = restaurant.CreateReservation("Hansen", "447 28 226", 
 Console.WriteLine(reservationResponse3.GetDescription());
 
 var dateTime4 = new DateTime(2023, 12, 24, 14, 00, 0);
-var reservationResponse4 = restaurant.CreateReservation("Hansen", "447 28 226", 4, dateTime4);
+var reservationResponse4 = restaurant.CreateReservation("Nilsen", "447 28 226", 4, dateTime4);
 Console.WriteLine(reservationResponse4.GetDescription());
+
+var dateTime5 = new DateTime(2023, 12, 24, 15, 15, 0);
+var reservationResponse5 = restaurant.CreateReservation("Andersen", "411 14 821", 3, dateTime5);
+Console.WriteLine(reservationResponse5.GetDescription());
+
+var dateTime6 = new DateTime(2023, 12, 24, 16, 45, 0);
+var reservationResponse6 = restaurant.CreateReservation("Andersen", "411 14 821", 5, dateTime6);
+Console.WriteLine(reservationResponse5.GetDescription());
 
 Console.WriteLine("\n++++++++++++++++++++++++++++++++++\n");
 
