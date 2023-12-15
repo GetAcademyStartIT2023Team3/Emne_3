@@ -31,7 +31,7 @@ internal class Restaurant {
             .Where(t => !_reservations.Exists(r => r.TableId == t.Id && r.TimeOverlaps(dateTime))) // get all tables which do not have a reservation at specified time
             .OrderBy(t => t.Seats)
             .FirstOrDefault();
-            
+
         if ( smallest_table == null) { /*handle null reference*/
             var description = $"Vi beklager! Det er ikke ledig bord til {seats} personer {dateTime}";
             return new ReservationResponse(description, null);
@@ -47,19 +47,22 @@ internal class Restaurant {
     {
         var reservations = ReservationHandle.GetAllReservationsForDate(date, _reservations);
 
-        string printRows = $"{_name} | Reservasjoner for {date:dd.MMMM yyyy}\n\n";
+        string stringOutput = $"{_name} | Reservasjoner for {date:dd.MMMM yyyy}\n";
 
-        printRows += "Tid.".PadRight(6) + '|';
+        string header = "| Bord".PadRight(9) + '|';
+        string headerRowDivide = "|".PadRight(9, '=') + '|';
         foreach (var table in _tables)
         {
-            printRows += $"    Bord {table.Id} ({table.Seats} personer)".PadRight(30) + '|';
+            header += $" {table.Id}: {table.Seats} Seter".PadRight(30) + '|';
+            headerRowDivide += $"".PadRight(30, '=') + '|';
         }
+        stringOutput += headerRowDivide + "\n" + header + "\n" + headerRowDivide;
 
         var currentTime = new DateTime(date.Year, date.Month, date.Day, _openingHour, 0, 0);
         var closingTime = new DateTime(date.Year, date.Month, date.Day, _closingHour, 0, 0);
         while (currentTime < closingTime)
         {
-            string row = "\n" + currentTime.ToString("HH:mm").PadRight(6) + "|";
+            string row = String.Empty;
 
             foreach (var table in _tables)
             {
@@ -86,10 +89,10 @@ internal class Restaurant {
                 row += columns.PadRight(30) + '|';
             }
 
-            printRows += row;
+            stringOutput += "\n" + $"| {currentTime:HH:mm}".PadRight(9) + "|" + row;
             currentTime = currentTime.AddMinutes(15);
         }
 
-        return printRows;
+        return stringOutput + "\n" + headerRowDivide;
 	}
 }
