@@ -1,4 +1,6 @@
-﻿namespace Project;
+﻿using System.Text;
+
+namespace Project;
 
 internal class Restaurant {
     private readonly string _name;
@@ -47,26 +49,31 @@ internal class Restaurant {
     {
         var reservations = ReservationHandle.GetAllReservationsForDate(date, _reservations);
 
-        string stringOutput = $"{_name} | Reservasjoner for {date:dd.MMMM yyyy}\n";
+        StringBuilder stringOutput = new();
+        StringBuilder header = new();
+        StringBuilder headerRowDivide = new();
 
-        string header = "| Bord".PadRight(9) + '|';
-        string headerRowDivide = "|".PadRight(9, '=') + '|';
+        stringOutput.Append($"{_name} | Reservasjoner for {date:dd.MMMM yyyy}\n");
+
+        header.Append($"{"| Bord", -9}|");
+        headerRowDivide.Append("|".PadRight(9, '=') + '|');
+
         foreach (var table in _tables)
         {
-            header += $" {table.Id}: {table.Seats} Seter".PadRight(30) + '|';
-            headerRowDivide += $"".PadRight(30, '=') + '|';
+            header.Append($" {table.Id}: {table.Seats} {"Seter", -24}|");
+            headerRowDivide.Append($"".PadRight(30, '=') + '|');
         }
-        stringOutput += headerRowDivide + "\n" + header + "\n" + headerRowDivide;
+        stringOutput.Append($"{headerRowDivide}\n{header}\n{headerRowDivide}");
 
         var currentTime = new DateTime(date.Year, date.Month, date.Day, _openingHour, 0, 0);
         var closingTime = new DateTime(date.Year, date.Month, date.Day, _closingHour, 0, 0);
         while (currentTime < closingTime)
         {
-            string row = String.Empty;
+            StringBuilder row = new();
 
             foreach (var table in _tables)
             {
-                string columns = String.Empty;
+                StringBuilder columns = new();
                 foreach (var reservation in reservations)
                 {
                     if (table.Id != reservation.TableId) continue;
@@ -80,19 +87,19 @@ internal class Restaurant {
                         0.75 => $"  Antall. {reservation.Seats} Personer",
                         1.25 => $"  Tlf. {reservation.Phone}",
                         1.75 => "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
-                        _ => String.Empty,
+                        _ => string.Empty,
                     };
 
-                    columns += column;
+                    columns.Append(column);
                 }
 
-                row += columns.PadRight(30) + '|';
+                row.Append($"{columns,-30}|");
             }
 
-            stringOutput += "\n" + $"| {currentTime:HH:mm}".PadRight(9) + "|" + row;
+            stringOutput.Append($"\n| {currentTime,-7:HH:mm}|{row}");
             currentTime = currentTime.AddMinutes(15);
         }
 
-        return stringOutput + "\n" + headerRowDivide;
+        return $"{stringOutput}\n{headerRowDivide}";
 	}
 }
